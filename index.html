@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+</head>
+<body>
+    <h2>Inscription</h2>
+    <form id="inscriptionForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+
+        <button type="button" onclick="submitForm()">S'inscrire</button>
+    </form>
+
+    <script>
+        function submitForm() {
+            const email = document.getElementById('email').value;
+
+            // Envoi des données d'inscription à l'API
+            fetch('http://localhost:3000/inscription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Affichez le message de la réponse de l'API
+            })
+            .catch(error => {
+                console.error('Erreur lors de la soumission du formulaire:', error);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,9 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const amqp = require('amqplib');
+const http = require('http');
 
 const app = express();
 const port = 3000;
+const server = http.createServer(app);
+app.use(express.json());
 
 app.use(bodyParser.json());
 
@@ -12,6 +15,7 @@ const queue = 'inscription_queue';
 let channel;
 
 async function setupRabbitMQ() {
+  // Utilisation du protocole amqp
   const connection = await amqp.connect('amqp://localhost');
   channel = await connection.createChannel();
   await channel.assertQueue(queue, { durable: true });
@@ -46,7 +50,9 @@ function sendAMQPMessage(userId) {
 }
 
 // Démarrage du serveur Express et configuration de RabbitMQ
-app.listen(port, async () => {
+app.use(express.static(__dirname));
+
+server.listen(port, async () => {
   console.log(`Server is running at http://localhost:${port}`);
   await setupRabbitMQ();
 });
